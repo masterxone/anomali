@@ -10,90 +10,90 @@ cd /usr/local/sbin
 # Instalasi Create Account
 wget -q -O /usr/local/sbin/trialsshbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/trialsshbot"
 chmod +x /usr/local/sbin/trialsshbot
-dos2unix /usr/local/sbin/trialsshbot
+sed -i 's/\r$//' /usr/local/sbin/trialsshbot
 wget -q -O /usr/local/sbin/addsshbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/addsshbot"
 chmod +x /usr/local/sbin/addsshbot
-dos2unix /usr/local/sbin/addsshbot
+sed -i 's/\r$//' /usr/local/sbin/addsshbot
 wget -q -O /usr/local/sbin/trialvmessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/trialvmessbot"
 chmod +x /usr/local/sbin/trialvmessbot
-dos2unix /usr/local/sbin/trialvmessbot
+sed -i 's/\r$//' /usr/local/sbin/trialvmessbot
 wget -q -O /usr/local/sbin/addvmessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/addvmessbot"
 chmod +x /usr/local/sbin/addvmessbot
-dos2unix /usr/local/sbin/addvmessbot
+sed -i 's/\r$//' /usr/local/sbin/addvmessbot
 wget -q -O /usr/local/sbin/trialvlessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/trialvlessbot"
 chmod +x /usr/local/sbin/trialvlessbot
-dos2unix /usr/local/sbin/trialvlessbot
+sed -i 's/\r$//' /usr/local/sbin/trialvlessbot
 wget -q -O /usr/local/sbin/addvlessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/addvlessbot"
 chmod +x /usr/local/sbin/addvlessbot
-dos2unix /usr/local/sbin/addvlessbot
+sed -i 's/\r$//' /usr/local/sbin/addvlessbot
 wget -q -O /usr/local/sbin/trialtrojanbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/trialtrojanbot"
 chmod +x /usr/local/sbin/trialtrojanbot
-dos2unix /usr/local/sbin/trialtrojanbot
+sed -i 's/\r$//' /usr/local/sbin/trialtrojanbot
 wget -q -O /usr/local/sbin/addtrojanbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/addtrojanbot"
 chmod +x /usr/local/sbin/addtrojanbot
-dos2unix /usr/local/sbin/addtrojanbot
+sed -i 's/\r$//' /usr/local/sbin/addtrojanbot
 wget -q -O /usr/local/sbin/renewsshbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/renewsshbot"
 chmod +x /usr/local/sbin/renewsshbot
-dos2unix /usr/local/sbin/renewsshbot
+sed -i 's/\r$//' /usr/local/sbin/renewsshbot
 wget -q -O /usr/local/sbin/renewvmessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/renewvmessbot"
 chmod +x /usr/local/sbin/renewvmessbot
-dos2unix /usr/local/sbin/renewvmessbot
+sed -i 's/\r$//' /usr/local/sbin/renewvmessbot
 wget -q -O /usr/local/sbin/renewvlessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/renewvlessbot"
 chmod +x /usr/local/sbin/renewvlessbot
-dos2unix /usr/local/sbin/renewvlessbot
+sed -i 's/\r$//' /usr/local/sbin/renewvlessbot
 wget -q -O /usr/local/sbin/renewtrojanbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/renewtrojanbot"
 chmod +x /usr/local/sbin/renewtrojanbot
-dos2unix /usr/local/sbin/renewtrojanbot
+sed -i 's/\r$//' /usr/local/sbin/renewtrojanbot
 wget -q -O /usr/local/sbin/deletesshbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/deletesshbot"
 chmod +x /usr/local/sbin/deletesshbot
-dos2unix /usr/local/sbin/deletesshbot
+sed -i 's/\r$//' /usr/local/sbin/deletesshbot
 wget -q -O /usr/local/sbin/deletevmessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/deletevmessbot"
 chmod +x /usr/local/sbin/deletevmessbot
-dos2unix /usr/local/sbin/deletevmessbot
+sed -i 's/\r$//' /usr/local/sbin/deletevmessbot
 wget -q -O /usr/local/sbin/deletevlessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/deletevlessbot"
 chmod +x /usr/local/sbin/deletevlessbot
-dos2unix /usr/local/sbin/deletevlessbot
+sed -i 's/\r$//' /usr/local/sbin/deletevlessbot
 wget -q -O /usr/local/sbin/deletetrojanbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/deletetrojanbot"
 chmod +x /usr/local/sbin/deletetrojanbot
-dos2unix /usr/local/sbin/deletetrojanbot
+sed -i 's/\r$//' /usr/local/sbin/deletetrojanbot
 wget -q -O /usr/local/sbin/cekuuidbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/cekuuidbot"
 chmod +x /usr/local/sbin/cekuuidbot
-dos2unix /usr/local/sbin/cekuuidbot
+sed -i 's/\r$//' /usr/local/sbin/cekuuidbot
 
 # Instalasi Backup & Restore
 wget -q -O /usr/local/sbin/autobackupbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/autobackupbot"
 chmod +x /usr/local/sbin/autobackupbot
-dos2unix autobackupbot
+sed -i 's/\r$//' autobackupbot
 # wget -q -O /usr/local/sbin/restorebot "https://raw.githubusercontent.com/masterxone/anomali/main/script/restorebot"
 # chmod +x /usr/local/sbin/restorebot
-# dos2unix restorebot
+# sed -i 's/\r$//' restorebot
 
 # Instalasi Limit
 wget -q -O /usr/bin/tendang "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitsshbot"
 chmod +x /usr/bin/tendang # limit ip ssh
-dos2unix /usr/bin/tendang # limit ip ssh
+sed -i 's/\r$//' /usr/bin/tendang # limit ip ssh
 wget -q -O /usr/bin/vmess "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvmessbot"
 chmod +x /usr/bin/vmess # limit ip vmess
-dos2unix /usr/bin/vmess # limit ip vmess
+sed -i 's/\r$//' /usr/bin/vmess # limit ip vmess
 wget -q -O /usr/bin/vless "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvlessbot"
 chmod +x /usr/bin/vless # limit ip vless
-dos2unix /usr/bin/vless # limit ip vless
+sed -i 's/\r$//' /usr/bin/vless # limit ip vless
 wget -q -O /usr/bin/trojan "https://raw.githubusercontent.com/masterxone/anomali/main/script/limittrojanbot"
 chmod +x /usr/bin/trojan # limit ip trojan
-dos2unix /usr/bin/trojan # limit ip trojan
+sed -i 's/\r$//' /usr/bin/trojan # limit ip trojan
 wget -q -O /etc/xray/limit.vmess "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvmessbotx"
 chmod +x /etc/xray/limit.vmess # limit quota vmess
-dos2unix /etc/xray/limit.vmess # limit quota vmess
+sed -i 's/\r$//' /etc/xray/limit.vmess # limit quota vmess
 wget -q -O /etc/xray/limit.vless "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvlessbotx"
 chmod +x /etc/xray/limit.vless # limit quota vless
-dos2unix /etc/xray/limit.vless # limit quota vless
+sed -i 's/\r$//' /etc/xray/limit.vless # limit quota vless
 wget -q -O /etc/xray/limit.trojan "https://raw.githubusercontent.com/masterxone/anomali/main/script/limittrojanbotx"
 chmod +x /etc/xray/limit.trojan # limit quota trojan
-dos2unix /etc/xray/limit.trojan # limit quota trojan
+sed -i 's/\r$//' /etc/xray/limit.trojan # limit quota trojan
 
 wget -q -O /usr/bin/keamanan "https://raw.githubusercontent.com/masterxone/anomali/main/script/keamananbot"
 chmod +x /usr/bin/keamanan
-dos2unix /usr/bin/keamanan
+sed -i 's/\r$//' /usr/bin/keamanan
 
 # systemctl stop dropbear
 # pkill dropbear
