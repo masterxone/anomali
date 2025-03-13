@@ -9,10 +9,11 @@ import getopt
 import socket
 import threading
 
-PASS = ''
 BUFLEN = 4096 * 4
 TIMEOUT = 60
+DEFAULT_HOST = '127.0.0.1:143'
 RESPONSE = b'HTTP/1.1 101 <b><font color="#00FFFF">SERVER</font> <font color="#FFA500">PREMIUM</font>\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: foo\r\n\r\n'
+
 
 class Server(threading.Thread):
     def __init__(self, listen_port, target_host, target_port, verbose):
@@ -42,12 +43,14 @@ class Server(threading.Thread):
                     self.log(f"Accepted connection from {addr}")
                     handler = ConnectionHandler(client_socket, self.target_host, self.target_port, self.listen_port, self.verbose)
                     handler.start()
+                    
                     self.add_connection(handler)
                 except socket.timeout:
                     continue
                     
                 except Exception as e:
                     self.log(f"[ERROR] Error accepting connection: {e}")
+                    
         except Exception as e:
             self.log(f"[ERROR] Server error: {e}")
         finally:
@@ -110,17 +113,61 @@ class ConnectionHandler(threading.Thread):
                 pass
             finally:
                 self.target_closed = True
+    
+    def findHeader(self, data, header):
+        data = data.decode() if isinstance(data, bytes) else data
+        aux = data.find(header + ': ')
+        if aux == -1:
+            return ''
+            
+        aux = data.find(':', aux) + 2
+        end = data.find('\r\n', aux)
+        if end == -1:
+            end = len(data)
+        return data[aux:end]
+
+    def method_CONNECT(self, hostPort):
+        parts = hostPort.split(':')
+        host = parts[0]
+        port = int(parts[1]) if len(parts) > 1 else 443
+        
+        try:
+            self.target_socket = socket.create_connection((host, port), timeout=TIMEOUT)
+            self.target_closed = False
+            self.log(f"Connected to target {host}:{port}")
+            self.client_socket.sendall(RESPONSE)
+            self.forward_data()
+            
+        except Exception as e:
+            self.log(f"[ERROR] CONNECT method failed: {e}")
+            self.client_socket.send(b'HTTP/1.1 502 Bad Gateway\r\n\r\n')
+            self.close()
 
     def run(self):
         try:
-            self.target_socket = socket.create_connection((self.target_host, self.target_port), timeout=TIMEOUT)
-            self.target_closed = False
-            self.log(f"Connected to target {self.target_host}:{self.target_port}")
-            self.client_socket.sendall(RESPONSE)
-            self.forward_data()
+            self.client_buffer = self.client_socket.recv(BUFLEN)
+            hostPort = self.findHeader(self.client_buffer, 'X-Real-Host')
+            
+            if hostPort == '':
+                hostPort = DEFAULT_HOST
+                
+            split = self.findHeader(self.client_buffer, 'X-Split')
+            if split != '':
+                self.client_socket.recv(BUFLEN)
+                
+            if hostPort != '':
+                if hostPort.startswith('127.0.0.1') or hostPort.startswith('localhost'):
+                    self.method_CONNECT(hostPort)
+                else:
+                    self.log(f"Connecting to specified host: {hostPort}")
+                    self.method_CONNECT(hostPort)
+            else:
+                self.log("No X-Real-Host!")
+                self.client_socket.send(b'HTTP/1.1 400 NoXRealHost!\r\n\r\n')
+                self.close()
+                
         except Exception as e:
             self.log(f"[ERROR] Error handling connection: {e}")
-        finally:
             self.close()
 
     def forward_data(self):
@@ -131,17 +178,21 @@ class ConnectionHandler(threading.Thread):
                 for sock in ready_to_read:
                     data = sock.recv(BUFLEN)
                     if data:
+                    
                         if sock is self.client_socket:
                             self.target_socket.sendall(data)
                             self.log(f":{self.listen_port}: >>>> {len(data)} bytes sent")
                         else:
+                        
                             self.client_socket.sendall(data)
                             self.log(f":{self.listen_port}: <<<< {len(data)} bytes received")
                     else:
+                    
                         return
             except socket.timeout:
                 self.log("[ERROR] Forwarding timeout!")
                 return
+                
             except Exception as e:
                 self.log(f"[ERROR] Forwarding error: {e}")
                 return
@@ -159,7 +210,7 @@ def parse_args(argv):
             if opt in ("-f", "--file"):
                 config_file = arg
     except:
-        print("Usage: python3 ws -f <tun.conf>")
+        print("Usage: python3 ws -f <config.yml>")
         sys.exit(2)
     return config_file
 
@@ -168,10 +219,10 @@ def load_config(config_file):
     try:
         with open(config_file, "r") as file:
             return yaml.safe_load(file)
+            
     except Exception as e:
         print(f"[ERROR] Failed to load configuration file: {e}")
         sys.exit(1)
-
 
 def signal_handler(sig, frame):
     print("\nReceived interrupt signal. Stopping servers...")
@@ -209,11 +260,11 @@ def main(config_file):
 
     while True:
         time.sleep(3)
-
+        
 
 if __name__ == "__main__":
     config_file = parse_args(sys.argv[1:])
     if not config_file:
-        print("Usage: python3 ws -f <tun.conf>")
+        print("Usage: python3 ws -f <config.yml>")
         sys.exit(1)
     main(config_file)
