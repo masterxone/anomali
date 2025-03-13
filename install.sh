@@ -56,8 +56,11 @@ dos2unix /usr/local/sbin/deletevlessbot
 wget -q -O /usr/local/sbin/deletetrojanbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/deletetrojanbot"
 chmod +x /usr/local/sbin/deletetrojanbot
 dos2unix /usr/local/sbin/deletetrojanbot
+wget -q -O /usr/local/sbin/cekuuidbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/cekuuidbot"
+chmod +x /usr/local/sbin/cekuuidbot
+dos2unix /usr/local/sbin/cekuuidbot
 
-# Instalasi Backup & backup
+# Instalasi Backup & Restore
 wget -q -O /usr/local/sbin/autobackupbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/autobackupbot"
 chmod +x /usr/local/sbin/autobackupbot
 dos2unix autobackupbot
