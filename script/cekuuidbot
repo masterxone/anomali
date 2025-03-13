@@ -1,0 +1,15 @@
+#!/bin/bash
+# https://t.me/gemilangkinasih
+
+# Meminta input UUID dari pengguna
+read -p "Masukkan UUID: " input_uuid
+
+# Mencari username berdasarkan UUID dalam file konfigurasi Xray
+username=$(grep "$input_uuid" /etc/xray/config.json | uniq | tail -n 2 | head -n 1 | sed -n 's/.*"email": "\([^"]*\)".*/\1/p')
+
+# Menampilkan hasil
+if [[ -n "$username" ]]; then
+    echo "Username : $username"
+else
+    echo "UUID tidak ditemukan"
+fi
