@@ -41,7 +41,8 @@ generateRandomString() {
 }
 
 # Panggil fungsi generateRandomString dengan panjang 15 karakter
-uuid=$(generateRandomString 15)
+# uuid=$(generateRandomString 15)
+uuid=$(cat /proc/sys/kernel/random/uuid)
 
 tgl=$(date -d "$masaaktif days" +"%d")
 bln=$(date -d "$masaaktif days" +"%b")
