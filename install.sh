@@ -88,6 +88,9 @@ sed -i 's/\r$//' /usr/local/sbin/deletetrojanbot
 wget -q -O /usr/local/sbin/cekuuidbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/cekuuidbot"
 chmod +x /usr/local/sbin/cekuuidbot
 sed -i 's/\r$//' /usr/local/sbin/cekuuidbot
+wget -q -O /usr/local/sbin/inputkeybot "https://raw.githubusercontent.com/masterxone/anomali/main/script/inputkeybot"
+chmod +x /usr/local/sbin/inputkeybot
+sed -i 's/\r$//' /usr/local/sbin/inputkeybot
 
 # Instalasi Backup & Restore
 wget -q -O /usr/local/sbin/autobackupbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/autobackupbot"
@@ -181,8 +184,8 @@ idtelegrub="@tokovpnserver"
 # echo "Pergi ke @BotFather dan type /newbot untuk membuat bot baru"
 # echo "Pergi ke @MissRose_bot dan type /id untuk mendapatkan ID telegram"
 # echo -e "\e[33m──────────────────────────────────────────\033[0m"
-# read -p "Input Bot Token Server : " tokentelebot
-# read -p "Input Bot Token Backup : " tokentelebotx
+# read -p "Input Bot Token Server : " tokentelebotserver
+# read -p "Input Bot Token Backup : " tokentelebotbackup
 # read -p "Input ID Admin : " idteleowner
 # read -p "Input ID Grub  : " idtelegrub
 # echo -e "\e[33m──────────────────────────────────────────\033[0m"
