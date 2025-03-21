@@ -1,0 +1,34 @@
+#!/bin/bash
+
+clear
+echo -e ""
+echo -e "▀▀█▀▀ ▒█▀▀▀ ▒█░░░ ▒█▀▀▀ ▒█▀▀█ ▒█▀▀▀█ ▀▀█▀▀\033[0m" 
+echo -e "░▒█░░ ▒█▀▀▀ ▒█░░░ ▒█▀▀▀ ▒█▀▀▄ ▒█░░▒█ ░▒█░░\033[0m" 
+echo -e "░▒█░░ ▒█▄▄▄ ▒█▄▄█ ▒█▄▄▄ ▒█▄▄█ ▒█▄▄▄█ ░▒█░░\033[0m"
+echo -e "\e[33m──────────────────────────────────────────\033[0m"
+echo "Pergi ke @BotFather dan type /newbot untuk membuat bot baru"
+echo "Pergi ke @MissRose_bot dan type /id untuk mendapatkan ID telegram"
+echo -e "\e[33m──────────────────────────────────────────\033[0m"
+read -p "Input Bot Token Server : " tokentelebot
+read -p "Input Bot Token Backup : " tokentelebotbackup
+read -p "Input ID Admin : " idteleowner
+read -p "Input ID Grub  : " idtelegrub
+echo -e "\e[33m──────────────────────────────────────────\033[0m"
+clear
+
+# Instalasi token bot notif
+cd
+rm -rf /root/telebotvpn
+mkdir /root/telebotvpn
+echo "$tokentelebotserver" > /root/telebotvpn/tokentelebotserver
+echo "$tokentelebotbackup" > /root/telebotvpn/tokentelebotbackup
+echo "$idteleowner" > /root/telebotvpn/idteleowner
+echo "$idtelegrub" > /root/telebotvpn/idtelegrub
+
+clear
+echo -e "\e[33m──────────────────────────────────────────\033[0m"
+echo -e "\E[40;1;37m      INSTALL SCRIPT BOT VPN SUCCESS      \E[0m"
+echo -e "\e[33m──────────────────────────────────────────\033[0m"
+echo -e ""
+read -n 1 -s -r -p "Press [ Enter ] To Back On Menu"
+welcome
