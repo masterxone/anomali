@@ -181,6 +181,7 @@ for akun in "${data[@]}"; do
 exp=$(grep -wE "^### $akun" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^### $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"id":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^### $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"id":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
+uuid3="xrayvmess$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $akun has been locked, melewati proses."
@@ -190,12 +191,16 @@ fi
 status=1
 
 echo "Locked user $akun 4X Multilogin"
-sed -i "/^### $akun $exp/,/^},{/d" /etc/xray/config.json
+DATADB=$(cat /etc/vmess/.vmess.db | grep "^###" | grep -w "${akun}" | awk '{print $2}')
+if [[ "${DATADB}" != '' ]]; then
 sed -i "/^### $akun/d" /etc/vmess/.vmess.db
+fi
+echo "### ${akun} ${exp} ${uuid}" >> /etc/vmess/.vmess.db
+sed -i "/^### $akun $exp/,/^},{/d" /etc/xray/config.json
 sed -i '/#vmess$/a\### '"$akun $exp"'\
-},{"id": "'""$uuid"LOCKED"'","alterId": '"0"',"email": "'""$akun""'"' /etc/xray/config.json
+},{"id": "'""$uuid3""'","alterId": '"0"',"email": "'""$akun""'"' /etc/xray/config.json
 sed -i '/#vmessgrpc$/a\### '"$akun $exp"'\
-},{"id": "'""$uuid"LOCKED"'","alterId": '"0"',"email": "'""$akun""'"' /etc/xray/config.json
+},{"id": "'""$uuid3""'","alterId": '"0"',"email": "'""$akun""'"' /etc/xray/config.json
 send_logxx
 sed -i "/$akun/d" /tmp/lockipxray.txt
 truncate -s 0 /var/log/xray/access.log
@@ -206,6 +211,7 @@ truncate -s 0 /var/log/xray/access.log
 exp=$(grep -wE "^### $akun" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^### $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"id":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^### $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"id":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
+uuid3="xrayvmess$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $akun has been locked, melewati proses."
@@ -216,12 +222,16 @@ status=1
 
 echo "Unlock user $akun dalam 15 menit."
 echo "unlocklimitip vmess $akun $exp $uuid" | at now + 15 minutes &> /dev/null
-sed -i "/^### $akun $exp/,/^},{/d" /etc/xray/config.json
+DATADB=$(cat /etc/vmess/.vmess.db | grep "^###" | grep -w "${akun}" | awk '{print $2}')
+if [[ "${DATADB}" != '' ]]; then
 sed -i "/^### $akun/d" /etc/vmess/.vmess.db
+fi
+echo "### ${akun} ${exp} ${uuid}" >> /etc/vmess/.vmess.db
+sed -i "/^### $akun $exp/,/^},{/d" /etc/xray/config.json
 sed -i '/#vmess$/a\### '"$akun $exp"'\
-},{"id": "'""$uuid"LOCKED"'","alterId": '"0"',"email": "'""$akun""'"' /etc/xray/config.json
+},{"id": "'""$uuid3""'","alterId": '"0"',"email": "'""$akun""'"' /etc/xray/config.json
 sed -i '/#vmessgrpc$/a\### '"$akun $exp"'\
-},{"id": "'""$uuid"LOCKED"'","alterId": '"0"',"email": "'""$akun""'"' /etc/xray/config.json
+},{"id": "'""$uuid3""'","alterId": '"0"',"email": "'""$akun""'"' /etc/xray/config.json
 send_logx
 truncate -s 0 /var/log/xray/access.log
                 continue

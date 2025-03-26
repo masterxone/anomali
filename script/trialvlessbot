@@ -57,31 +57,6 @@ vlesslink1="vless://${uuid}@${domain}:443?path=/vless&security=tls&encryption=no
 vlesslink2="vless://${uuid}@${domain}:80?path=/vless&encryption=none&type=ws&host=${domain}#${user}"
 vlesslink3="vless://${uuid}@${domain}:443?mode=gun&security=tls&encryption=none&authority=${domain}&type=grpc&serviceName=vless-grpc&sni=${domain}#${user}"
 
-cat >/var/www/html/vless-$user.txt <<-END
-----------------------
-Status Trial VLESS Success
-----------------------
-ISP   : $ISP
-City  : $CITY
-----------------------
-Host  : $domain
-User  : $user
-UUID  : $uuid
-Max   : Unlimited
-Quota : Unlimited
-Port  : 443, 80
-Path  : /vless
-----------------------
-Tls   : $vlesslink1
-----------------------
-nTls  : $vlesslink2
-----------------------
-Grpc  : $vlesslink3
-----------------------
-Exp   : $pup Menit
-----------------------
-END
-
 if [ ! -e /etc/vless ]; then
   mkdir -p /etc/vless
 fi
@@ -103,12 +78,38 @@ d=$((${c} * 1024 * 1024 * 1024))
 if [[ ${c} != "0" ]]; then
   echo "${d}" >/etc/vless/${user}
 fi
+
 DATADB=$(cat /etc/vless/.vless.db | grep "^#&#" | grep -w "${user}" | awk '{print $2}')
 if [[ "${DATADB}" != '' ]]; then
   sed -i "/\b${user}\b/d" /etc/vless/.vless.db
 fi
+echo "#&# ${user} ${exp} ${uuid}" >> /etc/vless/.vless.db
 
-echo "#&# ${user} ${uuid} ${Quota} ${expe}" >> /etc/vless/.vless.db
+cat >/var/www/html/vless-$user.txt <<-END
+----------------------
+Status Trial VLESS Success
+----------------------
+ISP   : $ISP
+City  : $CITY
+----------------------
+Host  : $domain
+User  : $user
+UUID  : $uuid
+Max   : $iplimit IP
+Quota : $Quota GB
+Port  : 443, 80
+Path  : /vless
+----------------------
+Tls   : $vlesslink1
+----------------------
+nTls  : $vlesslink2
+----------------------
+Grpc  : $vlesslink3
+----------------------
+Exp   : $pup Menit
+----------------------
+END
+
 clear
 
 TEXT="

@@ -63,6 +63,34 @@ trojanlink1="trojan://${uuid}@${domain}:443?path=/trojan-ws&security=tls&host=${
 trojanlink2="trojan://${uuid}@${domain}:80?path=/trojan-ws&security=none&host=${domain}&type=ws#${user}"
 trojanlink3="trojan://${uuid}@${domain}:443?mode=gun&security=tls&authority=${domain}&type=grpc&serviceName=trojan-grpc&sni=${domain}#${user}"
 
+if [ ! -e /etc/trojan ]; then
+  mkdir -p /etc/trojan
+fi
+
+if [[ $iplimit -gt 0 ]]; then
+mkdir -p /etc/kyt/limit/trojan/ip
+echo -e "$iplimit" > /etc/kyt/limit/trojan/ip/$user
+else
+echo > /dev/null
+fi
+
+if [ -z ${Quota} ]; then
+  Quota="0"
+fi
+
+c=$(echo "${Quota}" | sed 's/[^0-9]*//g')
+d=$((${c} * 1024 * 1024 * 1024))
+
+if [[ ${c} != "0" ]]; then
+  echo "${d}" >/etc/trojan/${user}
+fi
+
+DATADB=$(cat /etc/trojan/.trojan.db | grep "^###" | grep -w "${user}" | awk '{print $2}')
+if [[ "${DATADB}" != '' ]]; then
+  sed -i "/\b${user}\b/d" /etc/trojan/.trojan.db
+fi
+echo "### ${user} ${exp} ${uuid}" >> /etc/trojan/.trojan.db
+
 cat >/var/www/html/trojan-$user.txt <<-END
 ----------------------
 Status Create TROJAN Success
@@ -86,32 +114,6 @@ Exp   : $exp_formatted
 ----------------------
 END
 
-if [ ! -e /etc/trojan ]; then
-  mkdir -p /etc/trojan
-fi
-
-if [[ $iplimit -gt 0 ]]; then
-mkdir -p /etc/kyt/limit/trojan/ip
-echo -e "$iplimit" > /etc/kyt/limit/trojan/ip/$user
-else
-echo > /dev/null
-fi
-
-if [ -z ${Quota} ]; then
-  Quota="0"
-fi
-
-c=$(echo "${Quota}" | sed 's/[^0-9]*//g')
-d=$((${c} * 1024 * 1024 * 1024))
-
-if [[ ${c} != "0" ]]; then
-  echo "${d}" >/etc/trojan/${user}
-fi
-DATADB=$(cat /etc/trojan/.trojan.db | grep "^###" | grep -w "${user}" | awk '{print $2}')
-if [[ "${DATADB}" != '' ]]; then
-  sed -i "/\b${user}\b/d" /etc/trojan/.trojan.db
-fi
-echo "### ${user} ${exp} ${uuid} ${Quota} ${iplimit}" >> /etc/trojan/.trojan.db
 clear
 
 TEXT="

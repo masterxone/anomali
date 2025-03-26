@@ -184,6 +184,7 @@ for akun in "${data[@]}"; do
 exp=$(grep -wE "^#! $akun" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^#! $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^#! $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
+uuid3="xraytrojan$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $akun has been locked, melewati proses."
@@ -193,12 +194,16 @@ fi
 status=1
 
 echo "Locked user $akun 4X Multilogin"
-sed -i "/^#! $akun $exp/,/^},{/d" /etc/xray/config.json
+DATADB=$(cat /etc/trojan/.trojan.db | grep "^###" | grep -w "${akun}" | awk '{print $2}')
+if [[ "${DATADB}" != '' ]]; then
 sed -i "/^### $akun/d" /etc/trojan/.trojan.db
+fi
+echo "### ${akun} ${exp} ${uuid}" >> /etc/trojan/.trojan.db
+sed -i "/^#! $akun $exp/,/^},{/d" /etc/xray/config.json
 sed -i '/#trojanws$/a\#! '"$akun $exp"'\
-},{"password": "'""$uuid"LOCKED"'","email" : "'""$akun""'"' /etc/xray/config.json
+},{"password": "'""$uuid3""'","email" : "'""$akun""'"' /etc/xray/config.json
 sed -i '/#trojangrpc$/a\#! '"$akun $exp"'\
-},{"password": "'""$uuid"LOCKED"'","email" : "'""$akun""'"' /etc/xray/config.json
+},{"password": "'""$uuid3""'","email" : "'""$akun""'"' /etc/xray/config.json
 send_logxx
 sed -i "/$akun/d" /tmp/lockipxray.txt
 truncate -s 0 /var/log/xray/access.log
@@ -209,6 +214,7 @@ truncate -s 0 /var/log/xray/access.log
 exp=$(grep -wE "^#! $akun" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^#! $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^#! $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
+uuid3="xraytrojan$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $akun has been locked, melewati proses."
@@ -219,12 +225,16 @@ status=1
 
 echo "Unlock user $akun dalam 15 menit."
 echo "unlocklimitip trojan $akun $exp $uuid" | at now + 15 minutes &> /dev/null
-sed -i "/^#! $akun $exp/,/^},{/d" /etc/xray/config.json
+DATADB=$(cat /etc/trojan/.trojan.db | grep "^###" | grep -w "${akun}" | awk '{print $2}')
+if [[ "${DATADB}" != '' ]]; then
 sed -i "/^### $akun/d" /etc/trojan/.trojan.db
+fi
+echo "### ${akun} ${exp} ${uuid}" >> /etc/trojan/.trojan.db
+sed -i "/^#! $akun $exp/,/^},{/d" /etc/xray/config.json
 sed -i '/#trojanws$/a\#! '"$akun $exp"'\
-},{"password": "'""$uuid"LOCKED"'","email" : "'""$akun""'"' /etc/xray/config.json
+},{"password": "'""$uuid3""'","email" : "'""$akun""'"' /etc/xray/config.json
 sed -i '/#trojangrpc$/a\#! '"$akun $exp"'\
-},{"password": "'""$uuid"LOCKED"'","email" : "'""$akun""'"' /etc/xray/config.json
+},{"password": "'""$uuid3""'","email" : "'""$akun""'"' /etc/xray/config.json
 send_logx
 truncate -s 0 /var/log/xray/access.log
                 continue

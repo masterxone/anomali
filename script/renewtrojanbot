@@ -30,8 +30,9 @@ d2=$(date -d "$now" +%s)
 exp2=$(( (d1 - d2) / 86400 ))
 exp3=$(($exp2 + $masaaktif))
 exp4=`date -d "$exp3 days" +"%Y-%m-%d"`
+uuid=$(grep -w "^#! $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sort | uniq)
 sed -i "/#! $user/c\#! $user $exp4" /etc/xray/config.json
-sed -i "/#! $user/c\#! $user $exp4" /etc/trojan/.trojan.db
+sed -i "/### $user/c\### $user $exp4 $uuid" /etc/trojan/.trojan.db
 systemctl restart xray > /dev/null 2>&1
 
 TEXT="

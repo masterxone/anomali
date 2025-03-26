@@ -27,7 +27,7 @@ echo -e "Username locked."
 exit 0
 else
 sed -i "/^#& $user $exp/,/^},{/d" /etc/xray/config.json
-sed -i "/^#& $user/d" /etc/vless/.vless.db
+sed -i "/^### $user/d" /etc/vless/.vless.db
 rm -rf /etc/vless/$user
 rm -rf /etc/kyt/limit/vless/ip/$user
 rm -r /var/www/html/vless-Trial-"$user".txt > /dev/null 2>&1

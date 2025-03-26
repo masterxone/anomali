@@ -112,18 +112,23 @@ while true; do
 exp=$(grep -wE "^#! $user" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^#! $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^#! $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
+uuid3="xraytrojan$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $user has been locked, melewati proses."
     continue
 fi
 
-sed -i "/^#! $user $exp/,/^},{/d" /etc/xray/config.json
+DATADB=$(cat /etc/trojan/.trojan.db | grep "^###" | grep -w "${user}" | awk '{print $2}')
+if [[ "${DATADB}" != '' ]]; then
 sed -i "/^### $user/d" /etc/trojan/.trojan.db
+fi
+echo "### ${user} ${exp} ${uuid}" >> /etc/trojan/.trojan.db
+sed -i "/^#! $user $exp/,/^},{/d" /etc/xray/config.json
 sed -i '/#trojanws$/a\#! '"$user $exp"'\
-},{"password": "'""$uuid"LOCKED"'","email" : "'""$user""'"' /etc/xray/config.json
+},{"password": "'""$uuid3""'","email" : "'""$user""'"' /etc/xray/config.json
 sed -i '/#trojangrpc$/a\#! '"$user $exp"'\
-},{"password": "'""$uuid"LOCKED"'","email" : "'""$user""'"' /etc/xray/config.json
+},{"password": "'""$uuid3""'","email" : "'""$user""'"' /etc/xray/config.json
                 echo "0" > "/etc/limit/trojan/${user}"
                 send-log
                 echo "User $user melebihi batas. Notifikasi berhasil dikirim!"

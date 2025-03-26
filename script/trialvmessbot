@@ -65,8 +65,7 @@ asu=`cat<<EOF
       "path": "/vmess",
       "type": "none",
       "host": "${domain}",
-      "tls": "tls",
-      "sni": "${domain}"
+      "tls": "tls"
 }
 EOF`
 ask=`cat<<EOF
@@ -96,8 +95,7 @@ grpc=`cat<<EOF
       "path": "vmess-grpc",
       "type": "none",
       "host": "${domain}",
-      "tls": "tls",
-      "sni": "${domain}"
+      "tls": "tls"
 }
 EOF`
 vmess_base641=$( base64 -w 0 <<< $vmess_json1)
@@ -106,31 +104,6 @@ vmess_base643=$( base64 -w 0 <<< $vmess_json3)
 vmesslink1="vmess://$(echo $asu | base64 -w 0)"
 vmesslink2="vmess://$(echo $ask | base64 -w 0)"
 vmesslink3="vmess://$(echo $grpc | base64 -w 0)"
-
-cat > /var/www/html/vmess-$user.txt  <<-END
-----------------------
-Status Trial VMESS Success
-----------------------
-ISP   : $ISP
-City  : $CITY
-----------------------
-Host  : $domain
-User  : $user
-UUID  : $uuid
-Max   : Unlimited
-Quota : Unlimited
-Port  : 443, 80
-Path  : /vmess
-----------------------
-Tls   : $vmesslink1
-----------------------
-nTls  : $vmesslink2
-----------------------
-Grpc  : $vmesslink3
-----------------------
-Exp   : $pup Menit
-----------------------
-END
 
 if [ ! -e /etc/vmess ]; then
   mkdir -p /etc/vmess
@@ -153,11 +126,38 @@ d=$((${c} * 1024 * 1024 * 1024))
 if [[ ${c} != "0" ]]; then
   echo "${d}" >/etc/vmess/${user}
 fi
+
 DATADB=$(cat /etc/vmess/.vmess.db | grep "^#&#" | grep -w "${user}" | awk '{print $2}')
 if [[ "${DATADB}" != '' ]]; then
   sed -i "/\b${user}\b/d" /etc/vmess/.vmess.db
 fi
-echo "#&# ${user} ${pup} ${uuid} ${Quota}" >>/etc/vmess/.vmess.db
+echo "#&# ${user} ${exp} ${uuid}" >>/etc/vmess/.vmess.db
+
+cat > /var/www/html/vmess-$user.txt  <<-END
+----------------------
+Status Trial VMESS Success
+----------------------
+ISP   : $ISP
+City  : $CITY
+----------------------
+Host  : $domain
+User  : $user
+UUID  : $uuid
+Max   : $iplimit IP
+Quota : $Quota GB
+Port  : 443, 80
+Path  : /vmess
+----------------------
+Tls   : $vmesslink1
+----------------------
+nTls  : $vmesslink2
+----------------------
+Grpc  : $vmesslink3
+----------------------
+Exp   : $pup Menit
+----------------------
+END
+
 clear
 
 TEXT="
@@ -171,8 +171,8 @@ Status Trial VMESS Success
 <code>✧ IP    :</code> <code>$MYIP</code>
 <code>✧ User  :</code> <code>$user</code>
 <code>✧ UUID  :</code> <code>$uuid</code>
-<code>✧ Max   :</code> <code>Unlimited</code>
-<code>✧ Quota :</code> <code>Unlimited</code>
+<code>✧ Max   :</code> <code>$iplimit IP</code>
+<code>✧ Quota :</code> <code>$Quota GB</code>
 <code>✧ Port  :</code> <code>443, 80</code>
 <code>✧ Path  :</code> <code>/vmess</code>
 ──────────────────────

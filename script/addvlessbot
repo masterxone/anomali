@@ -84,12 +84,12 @@ d=$((${c} * 1024 * 1024 * 1024))
 if [[ ${c} != "0" ]]; then
   echo "${d}" >/etc/vless/${user}
 fi
+
 DATADB=$(cat /etc/vless/.vless.db | grep "^###" | grep -w "${user}" | awk '{print $2}')
 if [[ "${DATADB}" != '' ]]; then
   sed -i "/\b${user}\b/d" /etc/vless/.vless.db
 fi
-echo "### ${user} ${exp} ${uuid} ${Quota} ${iplimit}" >> /etc/vless/.vless.db
-clear
+echo "### ${user} ${exp} ${uuid}" >> /etc/vless/.vless.db
 
 cat >/var/www/html/vless-$user.txt <<-END
 ----------------------
@@ -115,6 +115,8 @@ Grpc  : $vlesslink3
 Exp   : $exp_formatted
 ----------------------
 END
+
+clear
 
 TEXT="
 ──────────────────────

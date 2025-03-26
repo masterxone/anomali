@@ -112,18 +112,23 @@ while true; do
 exp=$(grep -wE "^### $user" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^### $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"id":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^### $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"id":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
+uuid3="xrayvmess$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $user has been locked, melewati proses."
     continue
 fi
 
-sed -i "/^### $user $exp/,/^},{/d" /etc/xray/config.json
+DATADB=$(cat /etc/vmess/.vmess.db | grep "^###" | grep -w "${user}" | awk '{print $2}')
+if [[ "${DATADB}" != '' ]]; then
 sed -i "/^### $user/d" /etc/vmess/.vmess.db
+fi
+echo "### ${user} ${exp} ${uuid}" >> /etc/vmess/.vmess.db
+sed -i "/^### $user $exp/,/^},{/d" /etc/xray/config.json
 sed -i '/#vmess$/a\### '"$user $exp"'\
-},{"id": "'""$uuid"LOCKED"'","alterId": '"0"',"email": "'""$user""'"' /etc/xray/config.json
+},{"id": "'""$uuid3""'","alterId": '"0"',"email": "'""$user""'"' /etc/xray/config.json
 sed -i '/#vmessgrpc$/a\### '"$user $exp"'\
-},{"id": "'""$uuid"LOCKED"'","alterId": '"0"',"email": "'""$user""'"' /etc/xray/config.json
+},{"id": "'""$uuid3""'","alterId": '"0"',"email": "'""$user""'"' /etc/xray/config.json
                 echo "0" > "/etc/limit/vmess/${user}"
                 send-log
                 echo "User $user melebihi batas. Notifikasi berhasil dikirim!"

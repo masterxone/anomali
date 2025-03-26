@@ -52,7 +52,7 @@ bln2=$(date +"%b")
 thn2=$(date +"%Y")
 tnggl="$tgl2 $bln2, $thn2"
 useradd -e `date -d "$masaaktif days" +"%Y-%m-%d"` -s /bin/false -M $Login
-expi="$(chage -l $Login | grep "Account expires" | awk -F": " '{print $2}')"
+exp="$(chage -l $Login | grep "Account expires" | awk -F": " '{print $2}')"
 echo -e "$Pass\n$Pass\n"| passwd $Login &> /dev/null
 hariini=`date -d "0 days" +"%Y-%m-%d"`
 expi=`date -d "$masaaktif days" +"%Y-%m-%d"`
@@ -61,10 +61,8 @@ DATADB=$(cat /etc/ssh/.ssh.db | grep "^###" | grep -w "${Login}" | awk '{print $
 if [[ "${DATADB}" != '' ]]; then
   sed -i "/\b${Login}\b/d" /etc/ssh/.ssh.db
 fi
-echo "### ${Login} ${expi} ${Pass} ${iplimit}" >>/etc/ssh/.ssh.db
-clear
+echo "### ${Login} ${expi} ${Pass}" >> /etc/ssh/.ssh.db
 
-clear
 cat > /var/www/html/ssh-$Login.txt <<-END
 ----------------------
 Status Create SSHWS Success
@@ -87,6 +85,8 @@ UDP   : $domain:1-65535@$Login:$Pass
 Exp   : $exp_formatted
 ----------------------
 END
+
+clear
 
 TEXT="
 ──────────────────────
