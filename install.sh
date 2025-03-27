@@ -113,13 +113,13 @@ sed -i 's/\r$//' /usr/bin/vless # limit ip vless
 wget -q -O /usr/bin/trojan "https://raw.githubusercontent.com/masterxone/anomali/main/script/limittrojanbot"
 chmod +x /usr/bin/trojan # limit ip trojan
 sed -i 's/\r$//' /usr/bin/trojan # limit ip trojan
-wget -q -O /etc/xray/limit.vmess "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limitvmessbotx"
+wget -q -O /etc/xray/limit.vmess "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvmessbotx"
 chmod +x /etc/xray/limit.vmess # limit quota vmess
 sed -i 's/\r$//' /etc/xray/limit.vmess # limit quota vmess
-wget -q -O /etc/xray/limit.vless "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limitvlessbotx"
+wget -q -O /etc/xray/limit.vless "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvlessbotx"
 chmod +x /etc/xray/limit.vless # limit quota vless
 sed -i 's/\r$//' /etc/xray/limit.vless # limit quota vless
-wget -q -O /etc/xray/limit.trojan "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limittrojanbotx"
+wget -q -O /etc/xray/limit.trojan "https://raw.githubusercontent.com/masterxone/anomali/main/script/limittrojanbotx"
 chmod +x /etc/xray/limit.trojan # limit quota trojan
 sed -i 's/\r$//' /etc/xray/limit.trojan # limit quota trojan
 
