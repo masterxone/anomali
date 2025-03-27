@@ -64,9 +64,9 @@ while true; do
         getThis=$(cat /tmp/${user} | awk '{print $1}')
 
         if [[ ${getThis} != "failed" ]]; then
-            downlink=$(xray api stats --server=127.0.0.1:10000 -name "user>>>${user}>>>traffic>>>downlink" | grep -w "value" | awk '{print $2}' | cut -d '"' -f2)
+            downlink=$(xray api stats --server=127.0.0.1:10000 -name "user>>>${user}>>>traffic>>>downlink" | grep -w "value" | awk '{print $2}' | cut -d '"' -f2); downlink=${downlink:-0}
             if [ -e /etc/limit/vmess/${user} ]; then
-                plus2=$(cat /etc/limit/vmess/${user})
+                plus2=$(cat /etc/limit/vmess/${user}); plus2=${plus2:-0}
                 plus3=$(( ${downlink} + ${plus2} ))
                 echo "${plus3}" > /etc/limit/vmess/"${user}"
                 echo "Data ${user} berhasil diambil dan ditambahkan"
