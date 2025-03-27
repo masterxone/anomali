@@ -104,24 +104,24 @@ sed -i 's/\r$//' autobackupbot
 wget -q -O /usr/bin/tendang "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitsshbot"
 chmod +x /usr/bin/tendang # limit ip ssh
 sed -i 's/\r$//' /usr/bin/tendang # limit ip ssh
-wget -q -O /etc/xray/limit.vmess "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvmessbot"
-chmod +x /etc/xray/limit.vmess # limit ip vmess
-sed -i 's/\r$//' /etc/xray/limit.vmess # limit ip vmess
-wget -q -O /etc/xray/limit.vless "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvlessbot"
-chmod +x /etc/xray/limit.vless # limit ip vless
-sed -i 's/\r$//' /etc/xray/limit.vless # limit ip vless
-wget -q -O /etc/xray/limit.trojan "https://raw.githubusercontent.com/masterxone/anomali/main/script/limittrojanbot"
-chmod +x /etc/xray/limit.trojan # limit ip trojan
-sed -i 's/\r$//' /etc/xray/limit.trojan # limit ip trojan
-wget -q -O /usr/bin/vmess "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limitvmessbotx"
-chmod +x /usr/bin/vmess # limit quota vmess
-sed -i 's/\r$//' /usr/bin/vmess # limit quota vmess
-wget -q -O /usr/bin/vless "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limitvlessbotx"
-chmod +x /usr/bin/vless # limit quota vless
-sed -i 's/\r$//' /usr/bin/vless # limit quota vless
-wget -q -O /usr/bin/trojan "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limittrojanbotx"
-chmod +x /usr/bin/trojan # limit quota trojan
-sed -i 's/\r$//' /usr/bin/trojan # limit quota trojan
+wget -q -O /etc/xray/vmess "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvmessbot"
+chmod +x /etc/xray/vmess # limit ip vmess
+sed -i 's/\r$//' /etc/xray/vmess # limit ip vmess
+wget -q -O /etc/xray/vless "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitvlessbot"
+chmod +x /etc/xray/vless # limit ip vless
+sed -i 's/\r$//' /etc/xray/vless # limit ip vless
+wget -q -O /etc/xray/trojan "https://raw.githubusercontent.com/masterxone/anomali/main/script/limittrojanbot"
+chmod +x /etc/xray/trojan # limit ip trojan
+sed -i 's/\r$//' /etc/xray/trojan # limit ip trojan
+wget -q -O /usr/bin/limit.vmess "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limitvmessbotx"
+chmod +x /usr/bin/limit.vmess # limit quota vmess
+sed -i 's/\r$//' /usr/bin/limit.vmess # limit quota vmess
+wget -q -O /usr/bin/limit.vless "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limitvlessbotx"
+chmod +x /usr/bin/limit.vless # limit quota vless
+sed -i 's/\r$//' /usr/bin/limit.vless # limit quota vless
+wget -q -O /usr/bin/limit.trojan "https://raw.githubusercontent.com/masterxone/anomali/main/scrquotat/limittrojanbotx"
+chmod +x /usr/bin/limit.trojan # limit quota trojan
+sed -i 's/\r$//' /usr/bin/limit.trojan # limit quota trojan
 
 wget -q -O /usr/bin/keamanan "https://raw.githubusercontent.com/masterxone/anomali/main/script/keamananbot"
 chmod +x /usr/bin/keamanan
