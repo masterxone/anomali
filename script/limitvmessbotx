@@ -122,8 +122,8 @@ data=(`cat /etc/xray/config.json | grep '###' | cut -d ' ' -f 2 | sort | uniq`)
 # Loop through each user
 echo "Memulai proses monitoring VMESS."
 truncate -s 0 /var/log/xray/access.log
-echo "Persiapan, sleep 30 detik!"
-sleep 30
+echo "Persiapan, sleep 60 detik!"
+sleep 60
 
 # Read log data once and process it
 log_data=$(cat /var/log/xray/access.log | tail -n 500)
@@ -257,8 +257,8 @@ fi
 rm -rf /tmp/ipvmessx.txt
 echo "Start vlip"
 sleep 10
-echo "Siklus monitoring selesai. sleep 120 detik!"
-sleep 120
+echo "Siklus monitoring selesai. sleep 300 detik!"
+sleep 300
 
         break
     fi
