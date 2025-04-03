@@ -118,7 +118,7 @@ while true; do
 exp=$(grep -wE "^### $user" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^### $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"id":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^### $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"id":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
-uuid3="xrayvmess$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
+uuid3="xrayvless$(tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 15)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $user has been locked, melewati proses"

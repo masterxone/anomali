@@ -125,8 +125,8 @@ data=(`cat /etc/xray/config.json | grep '#!' | cut -d ' ' -f 2 | sort | uniq`)
 # Loop through each user
 echo "Memulai proses monitoring TROJAN."
 truncate -s 0 /var/log/xray/access.log
-echo "Persiapan, sleep 30 detik!"
-sleep 30
+echo "Persiapan, sleep 60 detik!"
+sleep 60
 
 # Read log data once and process it
 log_data=$(cat /var/log/xray/access.log | tail -n 500)
@@ -184,7 +184,7 @@ for akun in "${data[@]}"; do
 exp=$(grep -wE "^#! $akun" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^#! $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^#! $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
-uuid3="xraytrojan$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
+uuid3="xraytrojan$(tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 15)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $akun has been locked, melewati proses."
@@ -214,7 +214,7 @@ truncate -s 0 /var/log/xray/access.log
 exp=$(grep -wE "^#! $akun" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
 uuid=$(grep -w "^#! $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sort | uniq)
 uuid2=$(grep -w "^#! $akun $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
-uuid3="xraytrojan$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 15 | head -n 1)LOCKED"
+uuid3="xraytrojan$(tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 15)LOCKED"
 
 if [[ "$uuid2" == "LOCKED" ]]; then
     echo -e "Account $akun has been locked, melewati proses."
