@@ -67,7 +67,7 @@ Notif 3X Multilogin: Lock 15 Menit
 curl -s --max-time "$TIMEOUT" -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
 }
 
-function send_logx() {
+function send_logxx() {
 DOMAIN_PART=$(cut -d '.' -f1 /etc/xray/domain | tr '[:lower:]' '[:upper:]')
 FULL_DOMAIN=$(cat /etc/xray/domain)
 
