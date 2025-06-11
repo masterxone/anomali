@@ -27,15 +27,21 @@ disk_usage=$(df -h / | awk 'NR==2 {gsub("%", "", $5); print $5}')
 # Threshold untuk peringatan
 threshold=95
 
-# Mengecek status layanan Xray
+# Fungsi cek status layanan
 check_xray_status() {
     systemctl is-active --quiet xray
+    echo $?
+}
+
+check_nginx_status() {
+    systemctl is-active --quiet nginx
     echo $?
 }
 
 attempts=0
 
 while (( attempts < 3 )); do
+    # RAM / Disk Overload Handling
     if (( ram_usage >= threshold )); then
         send_log "$ram_usage" "$disk_usage" "Warning : Penggunaan RAM Tinggi!"
         rm /var/log/*.log
@@ -56,6 +62,7 @@ while (( attempts < 3 )); do
         reboot
     fi
 
+    # Cek status Xray
     if [[ $(check_xray_status) -ne 0 ]]; then
         case $attempts in
             0)
@@ -72,8 +79,25 @@ while (( attempts < 3 )); do
         esac
         sleep $((attempts == 1 ? 30 : 10))
         ((attempts++))
+    # Cek status nginx
+    elif [[ $(check_nginx_status) -ne 0 ]]; then
+        case $attempts in
+            0)
+                send_log "$ram_usage" "$disk_usage" "Nginx Offline. Notif 1X : Warning"
+                ;;
+            1)
+                send_log "$ram_usage" "$disk_usage" "Nginx Offline. Notif 2X : Restart"
+                systemctl restart nginx
+                ;;
+            2)
+                send_log "$ram_usage" "$disk_usage" "Nginx Offline. Notif 3X : Reboot"
+                reboot
+                ;;
+        esac
+        sleep $((attempts == 1 ? 30 : 10))
+        ((attempts++))
     else
-        echo "SYSTEM OK: RAM=${ram_usage}%, DISK=${disk_usage}%, XRAY: ONLINE"
+        echo "SYSTEM OK: RAM=${ram_usage}%, DISK=${disk_usage}%, XRAY: ONLINE, NGINX: ONLINE"
         break
     fi
 done
