@@ -25,7 +25,7 @@ ram_usage=$(free | awk '/Mem:/ {printf "%.0f", $3/$2 * 100}')
 disk_usage=$(df -h / | awk 'NR==2 {gsub("%", "", $5); print $5}')
 
 # Threshold untuk peringatan
-threshold=95
+threshold=90
 
 # Fungsi cek status layanan
 check_xray_status() {
@@ -102,4 +102,6 @@ while (( attempts < 3 )); do
     fi
 done
 
-sleep 30
+echo "Siklus monitoring selesai. sleep 120 detik!"
+sleep 120
+
