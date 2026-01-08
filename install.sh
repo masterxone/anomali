@@ -94,6 +94,9 @@ sed -i 's/\r$//' /usr/local/sbin/inputkeybot
 wget -q -O /usr/local/sbin/xpbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/xpbot"
 chmod +x /usr/local/sbin/xpbot
 sed -i 's/\r$//' /usr/local/sbin/xpbot
+wget -q -O /usr/local/sbin/restartbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/restartbot"
+chmod +x /usr/local/sbin/restartbot
+sed -i 's/\r$//' /usr/local/sbin/restartbot
 
 # Instalasi Backup & Restore
 wget -q -O /usr/local/sbin/autobackupbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/autobackupbot"
