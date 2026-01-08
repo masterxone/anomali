@@ -96,9 +96,9 @@ sed -i 's/\r$//' /usr/local/sbin/inputkeybot
 wget -q -O /usr/local/sbin/autobackupbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/autobackupbot"
 chmod +x /usr/local/sbin/autobackupbot
 sed -i 's/\r$//' autobackupbot
-# wget -q -O /usr/local/sbin/restorebot "https://raw.githubusercontent.com/masterxone/anomali/main/script/restorebot"
-# chmod +x /usr/local/sbin/restorebot
-# sed -i 's/\r$//' restorebot
+wget -q -O /usr/local/sbin/restorebot "https://raw.githubusercontent.com/masterxone/anomali/main/script/restorebot"
+chmod +x /usr/local/sbin/restorebot
+sed -i 's/\r$//' restorebot
 
 # Instalasi Limit
 wget -q -O /usr/bin/tendang "https://raw.githubusercontent.com/masterxone/anomali/main/script/limitsshbot"
