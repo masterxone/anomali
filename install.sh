@@ -91,6 +91,9 @@ sed -i 's/\r$//' /usr/local/sbin/cekuuidbot
 wget -q -O /usr/local/sbin/inputkeybot "https://raw.githubusercontent.com/masterxone/anomali/main/script/inputkeybot"
 chmod +x /usr/local/sbin/inputkeybot
 sed -i 's/\r$//' /usr/local/sbin/inputkeybot
+wget -q -O /usr/local/sbin/xpbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/xpbot"
+chmod +x /usr/local/sbin/xpbot
+sed -i 's/\r$//' /usr/local/sbin/xpbot
 
 # Instalasi Backup & Restore
 wget -q -O /usr/local/sbin/autobackupbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/autobackupbot"
@@ -160,7 +163,7 @@ END
 cat > /etc/cron.d/xp <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-30 23 * * * root /usr/local/sbin/xp
+30 23 * * * root /usr/local/sbin/xpbot
 END
 	
 # cronjob jam 05:00
