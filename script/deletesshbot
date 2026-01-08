@@ -33,6 +33,7 @@ jq --arg pw "$User" '.auth.config -= [$pw]' "$CONFIG_FILE" > "$TMP_FILE" && mv "
 sed -i "/^### $User/d" /etc/ssh/.ssh.db
 rm -r /var/www/html/ssh-Trial-"$User".txt > /dev/null 2>&1
 rm -r /var/www/html/ssh-"$User".txt > /dev/null 2>&1
+systemctl restart zivpn >/dev/null 2>&1
 systemctl restart ssh >/dev/null 2>&1
 systemctl restart sshd >/dev/null 2>&1
 
