@@ -180,10 +180,10 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 END
 systemctl restart cron
 
-tokentelebotserver="7614690880:AAFXICde_ClEPMkuRZhoDJBVAoc0g43lkH4"
-tokentelebotbackup="8003246654:AAHVXaI4RigiZdI2un5PT20h2_YnkZFWjmk"
-idteleowner="6348824977"
-idtelegrub="@tokovpnserver"
+tokentelebotserver=""
+tokentelebotbackup=""
+idteleowner=""
+idtelegrub=""
 
 # echo -e ""
 # echo -e "▀▀█▀▀ ▒█▀▀▀ ▒█░░░ ▒█▀▀▀ ▒█▀▀█ ▒█▀▀▀█ ▀▀█▀▀\033[0m" 
