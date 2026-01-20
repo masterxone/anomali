@@ -31,10 +31,37 @@ iplimit=1000
 
 CONFIG_FILE="/etc/zivpn/config.json"
 TMP_FILE="/etc/zivpn/config.tmp"
-jq --arg pw "$Login" '.auth.config += [$pw]' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-systemctl restart zivpn &> /dev/null
-CMD="jq '.auth.config -= [\"$Login\"]' $CONFIG_FILE > $TMP_FILE && mv $TMP_FILE $CONFIG_FILE && systemctl restart zivpn"
-echo "$CMD" | at now + $pup minutes &> /dev/null
+LOCK_FILE="/var/lock/zivpn.lock"
+
+(
+  flock -x 200
+
+  jq --arg pw "$Login" '.auth.config += [$pw]' "$CONFIG_FILE" > "$TMP_FILE" || exit 1
+  jq empty "$TMP_FILE" || exit 1
+
+  mv "$TMP_FILE" "$CONFIG_FILE"
+  systemctl restart zivpn &>/dev/null
+
+) 200>"$LOCK_FILE"
+
+CMD='
+CONFIG_FILE="/etc/zivpn/config.json"
+TMP_FILE="/etc/zivpn/config.tmp"
+LOCK_FILE="/var/lock/zivpn.lock"
+
+(
+  flock -x 200
+
+  jq ".auth.config -= [\"'"$Login"'\" ]" "$CONFIG_FILE" > "$TMP_FILE" || exit 1
+  jq empty "$TMP_FILE" || exit 1
+
+  mv "$TMP_FILE" "$CONFIG_FILE"
+  systemctl restart zivpn &>/dev/null
+
+) 200>"$LOCK_FILE"
+'
+
+echo "$CMD" | at now + "$pup" minutes &>/dev/null
 
 # limitip
 if [[ $iplimit -gt 0 ]]; then
