@@ -150,6 +150,13 @@ if jq -e '.auth.config[] | select(test("^Trial-"))' "$CONFIG_FILE" >/dev/null 2>
     ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
 fi
 
+cut -d: -f1 /etc/passwd > /tmp/valid_ssh_users.txt
+jq --rawfile ssh /tmp/valid_ssh_users.txt '
+  .auth.config |= map(
+    select(. as $u | ($ssh | split("\n") | index($u)))
+  )
+' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
+
 # Restart ZIVPN setelah semua user diproses
 systemctl restart zivpn
 
@@ -308,3 +315,4 @@ fun_bar 'res1'
 echo -e ""
 echo -e "\e[33m──────────────────────────────────────────\033[0m" 
 echo -e ""
+
