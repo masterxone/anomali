@@ -96,7 +96,7 @@ chmod +x /usr/local/sbin/xpbot
 sed -i 's/\r$//' /usr/local/sbin/xpbot
 wget -q -O /usr/local/sbin/restartbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/restartbot"
 chmod +x /usr/local/sbin/restartbot
-sed -i 's/\r$//' /usr/local/sbin/totalmemberbot
+sed -i 's/\r$//' /usr/local/sbin/restartbot
 wget -q -O /usr/local/sbin/totalmemberbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/totalmemberbot"
 chmod +x /usr/local/sbin/totalmemberbot
 sed -i 's/\r$//' /usr/local/sbin/totalmemberbot
