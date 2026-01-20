@@ -123,9 +123,6 @@ for ((i = 1; i <= $totalaccounts; i++)); do
     while [ ${#tgl} -lt 2 ]; do
         tgl="0"$tgl
     done
-    while [ ${#username} -lt 15 ]; do
-        username=$username" "
-    done
     bulantahun=$(echo $tglexp | awk -F" " '{print $2,$6}')
     todaystime=$(date +%s)
     if [ $userexpireinseconds -ge $todaystime ]; then
@@ -145,9 +142,16 @@ for ((i = 1; i <= $totalaccounts; i++)); do
     fi
 done
 
+if jq -e '.auth.config[] | select(test("^Trial-"))' "$CONFIG_FILE" >/dev/null 2>&1; then
+    echo "[$(date +"%F %T")] Membersihkan semua user Trial-* dari ZIVPN"
+
+    jq '
+      .auth.config |= map(select(test("^Trial-") | not))
+    ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
+fi
+
 # Restart ZIVPN setelah semua user diproses
 systemctl restart zivpn
-
 
 # Langkah 1: Ambil daftar nama yang valid dari /etc/xray/config.json
 cat /etc/xray/config.json | grep '^###' | cut -d ' ' -f 2 | sort | uniq > /tmp/valid_vmess.txt
