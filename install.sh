@@ -100,6 +100,30 @@ sed -i 's/\r$//' /usr/local/sbin/restartbot
 wget -q -O /usr/local/sbin/totalmemberbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/totalmemberbot"
 chmod +x /usr/local/sbin/totalmemberbot
 sed -i 's/\r$//' /usr/local/sbin/totalmemberbot
+wget -q -O /usr/local/sbin/locksshbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/locksshbot"
+chmod +x /usr/local/sbin/locksshbot
+sed -i 's/\r$//' /usr/local/sbin/locksshbot
+wget -q -O /usr/local/sbin/lockvmessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/lockvmessbot"
+chmod +x /usr/local/sbin/lockvmessbot
+sed -i 's/\r$//' /usr/local/sbin/lockvmessbot
+wget -q -O /usr/local/sbin/lockvlessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/lockvlessbot"
+chmod +x /usr/local/sbin/lockvlessbot
+sed -i 's/\r$//' /usr/local/sbin/lockvlessbot
+wget -q -O /usr/local/sbin/lockrojanbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/lockrojanbot"
+chmod +x /usr/local/sbin/lockrojanbot
+sed -i 's/\r$//' /usr/local/sbin/lockrojanbot
+wget -q -O /usr/local/sbin/unlocksshbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/unlocksshbot"
+chmod +x /usr/local/sbin/unlocksshbot
+sed -i 's/\r$//' /usr/local/sbin/unlocksshbot
+wget -q -O /usr/local/sbin/unlockvmessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/unlockvmessbot"
+chmod +x /usr/local/sbin/unlockvmessbot
+sed -i 's/\r$//' /usr/local/sbin/unlockvmessbot
+wget -q -O /usr/local/sbin/unlockvlessbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/unlockvlessbot"
+chmod +x /usr/local/sbin/unlockvlessbot
+sed -i 's/\r$//' /usr/local/sbin/unlockvlessbot
+wget -q -O /usr/local/sbin/unlocktrojanbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/unlocktrojanbot"
+chmod +x /usr/local/sbin/unlocktrojanbot
+sed -i 's/\r$//' /usr/local/sbin/unlocktrojanbot
 
 # Instalasi Backup & Restore
 wget -q -O /usr/local/sbin/autobackupbot "https://raw.githubusercontent.com/masterxone/anomali/main/script/autobackupbot"
