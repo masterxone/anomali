@@ -1,0 +1,61 @@
+#!/bin/bash
+# https://t.me/gemilangkinasih
+
+CHATID=$(cat /root/telebotvpn/idteleowner)
+KEY=$(cat /root/telebotvpn/tokentelebotserver)
+TIME="10"
+URL="https://api.telegram.org/bot$KEY/sendMessage"
+IP=$(cat /etc/xray/ipvps)
+ISP=$(cat /etc/xray/isp)
+CITY=$(cat /etc/xray/city)
+domain=$(cat /etc/xray/domain)
+  
+read -p "Username Info : " user
+
+if ! grep -qiw "$user" /etc/xray/config.json; then
+    echo -e "Username tidak ada."
+    exit 0
+fi
+
+exp=$(grep -wE "^#! $user" "/etc/xray/config.json" | cut -d ' ' -f 3 | sort | uniq)
+uuid=$(grep -w "^#! $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sort | uniq)
+uuid1=$(grep -w "^#! $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sed 's/LOCKED//g' | sort | uniq)
+uuid2=$(grep -w "^#! $user $exp" -A 1 "/etc/xray/config.json" | awk -F'"' '/"password":/ {print $4}' | sed 's/.*\(LOCKED\)/\1/' | sort | uniq)
+uuid3=$(grep -w "^### $user" /etc/trojan/.trojan.db | awk '{print $4}')
+
+if [[ "$uuid2" == "LOCKED" ]]; then
+    echo > /dev/null   
+else
+    echo -e "Username unlocked."
+    exit 0
+fi
+
+DATADB=$(cat /etc/trojan/.trojan.db | grep "^###" | grep -w "${user}" | awk '{print $2}')
+if [[ "${DATADB}" != '' ]]; then
+sed -i "/^### $user/d" /etc/trojan/.trojan.db
+fi
+echo "### ${user} ${exp} ${uuid3}" >> /etc/trojan/.trojan.db
+sed -i "/^#! $user $exp/,/^},{/d" /etc/xray/config.json
+
+sed -i '/#trojanws$/a\#! '"$user $exp"'\
+},{"password": "'""$uuid3""'","email" : "'""$user""'"' /etc/xray/config.json
+sed -i '/#trojangrpc$/a\#! '"$user $exp"'\
+},{"password": "'""$uuid3""'","email" : "'""$user""'"' /etc/xray/config.json
+systemctl restart xray > /dev/null 2>&1
+
+
+TEXT="
+──────────────────────
+Unlocked Account TROJAN Success
+──────────────────────
+<code>✧ Host  :</code> <code>$domain</code>
+<code>✧ User  :</code> <code>$user</code>
+<code>✧ Exp   :</code> <code>$exp</code>
+────────────────────── "
+
+curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+atq | awk '{print $1}' | while read job; do at -c "$job" | grep -q "autobackupbot" && atrm "$job"; done &> /dev/null
+echo "autobackupbot" | at now + 30 minutes &> /dev/null
+
+echo -e "$user"
+echo -e "$exp"
