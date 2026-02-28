@@ -67,7 +67,7 @@ sed -i '/^#&/d' /root/backup/.trojan.db > /dev/null 2>&1
 cd /root
 zip -r $DOMAIN_PART.zip backup > /dev/null 2>&1
 
-response=$(curl -s -X POST -F "file=@/root/$DOMAIN_PART.zip" https://gmvpn.my.id/backup/upload.php)
+response=$(curl -k -s -X POST -F "file=@/root/$DOMAIN_PART.zip" https://gmvpn.my.id/backup/upload.php)
 url=$(echo "$response" | jq -r '.url')
 
 CHATID="$CHATID"
@@ -87,6 +87,7 @@ Link Backup :
 $url
 ────────────────────── "
 curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+sleep 2
 rm -r /root/backup
 rm -rf /root/$DOMAIN_PART.zip
 
@@ -104,4 +105,5 @@ Link Backup :
 $url
 ──────────────────────
 "
+
 echo ""
