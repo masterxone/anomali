@@ -1,0 +1,238 @@
+#!/bin/bash
+
+sleep 15
+
+function send_log() {
+CHATID=$(cat /root/telebotvpn/idteleowner)
+KEY=$(cat /root/telebotvpn/tokentelebotserver)
+domain=$(cat /etc/xray/domain)
+TIME="10"
+URL="https://api.telegram.org/bot$KEY/sendMessage"
+
+TEXT="
+───────────────────────
+🚫 Notifikasi Warning Server
+───────────────────────
+<code>RAM  :</code> <code>$1%</code>
+<code>Disk :</code> <code>$2%</code>
+<code>Host :</code> <code>$domain</code>
+───────────────────────
+$3
+───────────────────────"
+curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+}
+
+# Threshold untuk peringatan
+threshold=90
+
+# Port untuk test VMess
+PORT=55000
+TARGET_HOST="clients3.google.com"
+TARGET_URL="http://127.0.0.1:$PORT/generate_204"
+
+# Fungsi cek status layanan
+check_xray_status() {
+    systemctl is-active --quiet xray
+    echo $?
+}
+
+check_nginx_status() {
+    systemctl is-active --quiet nginx
+    echo $?
+}
+
+# 🔥 Fungsi cek VMess + delay
+check_vmess() {
+    START=$(date +%s%3N)
+    CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: $TARGET_HOST" "$TARGET_URL" --max-time 10)
+    END=$(date +%s%3N)
+    DELAY=$((END-START))
+
+    echo "$CODE|$DELAY"
+}
+
+attempts=0
+
+while (( attempts < 3 )); do
+
+    ram_usage=$(free | awk '/Mem:/ {printf "%.0f", $3/$2 * 100}')
+    disk_usage=$(df -h / | awk 'NR==2 {gsub("%", "", $5); print $5}')
+
+    if (( attempts == 0 )); then
+        sleep 10
+    fi
+
+    case $attempts in
+        0) SLEEP_TIME=15 ;;
+        1) SLEEP_TIME=30 ;;
+        2) SLEEP_TIME=60 ;;
+    esac
+
+    # RAM / Disk Overload Handling
+    if (( ram_usage >= threshold )); then
+        send_log "$ram_usage" "$disk_usage" "Warning : Penggunaan RAM Tinggi!"
+        rm -f /var/log/*.log /var/log/*.gz /var/log/*.1
+        apt clean
+        echo "Warning : RAM usage is high ($ram_usage%)"
+        sleep $SLEEP_TIME
+        reboot
+    elif (( disk_usage >= threshold )); then
+        send_log "$ram_usage" "$disk_usage" "Warning : Penggunaan Disk Tinggi!"
+        rm -f /var/log/*.log /var/log/*.gz /var/log/*.1
+        apt clean
+        echo "Warning : Disk usage is high ($disk_usage%)"
+        sleep $SLEEP_TIME
+        reboot
+    fi
+
+    # 🔥 Cek status Xray
+    if [[ $(check_xray_status) -ne 0 ]]; then
+        case $attempts in
+            0)
+                send_log "$ram_usage" "$disk_usage" "Xray Offline. Notif 1X : Warning"
+                ;;
+            1)
+                send_log "$ram_usage" "$disk_usage" "Xray Offline. Notif 2X : Restart"
+                systemctl restart xray
+                ;;
+            2)
+                send_log "$ram_usage" "$disk_usage" "Xray Offline. Notif 3X : Reboot"
+                reboot
+                ;;
+        esac
+        sleep $SLEEP_TIME
+        ((attempts++))
+        continue
+    fi
+
+    # 🔥 Cek status nginx
+    if [[ $(check_nginx_status) -ne 0 ]]; then
+        case $attempts in
+            0)
+                send_log "$ram_usage" "$disk_usage" "Nginx Offline. Notif 1X : Warning"
+                ;;
+            1)
+                send_log "$ram_usage" "$disk_usage" "Nginx Offline. Notif 2X : Restart"
+                systemctl restart nginx
+                ;;
+            2)
+                send_log "$ram_usage" "$disk_usage" "Nginx Offline. Notif 3X : Reboot"
+                reboot
+                ;;
+        esac
+        sleep $SLEEP_TIME
+        ((attempts++))
+        continue
+    fi
+
+    # 🔥 CEK VMESS (INTERNET + DELAY)
+    RESULT=$(check_vmess)
+    CODE=$(echo $RESULT | cut -d '|' -f1)
+    DELAY=$(echo $RESULT | cut -d '|' -f2)
+
+    if [[ "$CODE" == "200" || "$CODE" == "204" || "$CODE" == "301" || "$CODE" == "302" ]]; then
+        echo "SYSTEM OK: RAM: ${ram_usage}%, DISK: ${disk_usage}%"
+        echo "SYSTEM OK: XRAY: ON, NGINX: ON, VMESS: ON [${DELAY}ms]"
+        break
+    else
+        case $attempts in
+            0)
+                send_log "$ram_usage" "$disk_usage" "VMESS FAIL. Notif 1X : Warning"
+                ;;
+            1)
+                send_log "$ram_usage" "$disk_usage" "VMESS FAIL. Notif 2X : Restart"
+                systemctl restart xray-client
+                ;;
+            2)
+                send_log "$ram_usage" "$disk_usage" "VMESS FAIL. Notif 3X : Reboot"
+                reboot
+                ;;
+        esac
+        sleep $SLEEP_TIME
+        ((attempts++))
+    fi
+done
+
+echo "Siklus monitoring selesai. sleep 120 detik!"
+sleep 120
+
+======================================================
+
+nano /etc/systemd/system/xray-client.service
+
+[Unit]
+Description=Xray Client Test
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/xray run -config /root/x.json
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+======================================================
+
+{
+  "log": {
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log",
+    "loglevel": "debug"
+  },
+  "inbounds": [
+    {
+      "tag": "test-in",
+      "port": 55000,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "clients3.google.com",
+        "port": 80,
+        "network": "tcp"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "vmess-out",
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "sg.tokovpn.com",
+            "port": 80,
+            "users": [
+              {
+                "id": "80c94134-5c0b-44a3-96d2-ccd8d7c8e84e",
+                "alterId": 0,
+                "security": "auto"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/vmess",
+          "headers": {
+            "Host": "sg.tokovpn.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom"
+    }
+  ],
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "inboundTag": ["test-in"],
+        "outboundTag": "vmess-out"
+      }
+    ]
+  }
+}
