@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sleep 15
+sleep 30
 
 function send_log() {
 CHATID=$(cat /root/telebotvpn/idteleowner)
@@ -59,13 +59,13 @@ while (( attempts < 3 )); do
     disk_usage=$(df -h / | awk 'NR==2 {gsub("%", "", $5); print $5}')
 
     if (( attempts == 0 )); then
-        sleep 10
+        sleep 30
     fi
 
     case $attempts in
-        0) SLEEP_TIME=15 ;;
-        1) SLEEP_TIME=30 ;;
-        2) SLEEP_TIME=60 ;;
+        0) SLEEP_TIME=60 ;;
+        1) SLEEP_TIME=120 ;;
+        2) SLEEP_TIME=120 ;;
     esac
 
     # RAM / Disk Overload Handling
