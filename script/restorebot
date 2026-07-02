@@ -39,7 +39,6 @@ rm -f backup.zip
 echo -e "Start Restore In Process"
 sleep 3
 mkdir -p /etc/xray/ > /dev/null 2>&1
-mkdir -p /etc/zivpn/ > /dev/null 2>&1
 cd /root/backup/ > /dev/null 2>&1
 cp -f /root/backup/passwd /etc/
 cp -f /root/backup/group /etc/
@@ -56,14 +55,12 @@ cp -r /root/backup/quotax/vmess/* /etc/limit/vmess/ > /dev/null 2>&1
 cp -r /root/backup/quotax/vless/* /etc/limit/vless/ > /dev/null 2>&1
 cp -r /root/backup/quotax/trojan/* /etc/limit/trojan/ > /dev/null 2>&1
 cp -f /root/backup/xray/* /etc/xray/
-cp -f /root/backup/zivpn/* /etc/zivpn/
 cp -f /root/backup/html/* /var/www/html/ > /dev/null 2>&1
 cp -f /root/backup/.ssh.db /etc/ssh/ > /dev/null 2>&1
 cp -f /root/backup/.vmess.db /etc/vmess/ > /dev/null 2>&1
 cp -f /root/backup/.vless.db /etc/vless/ > /dev/null 2>&1
 cp -f /root/backup/.trojan.db /etc/trojan/ > /dev/null 2>&1
 systemctl restart xray
-systemctl restart zivpn
 systemctl restart ssh
 notif_restore
 rm -rf /root/backup
