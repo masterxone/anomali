@@ -108,8 +108,6 @@ done
 
 ##------ Auto Remove SSH
 hariini=$(date +%d-%m-%Y)
-CONFIG_FILE="/etc/zivpn/config.json"
-TMP_FILE="/etc/zivpn/config.tmp"
 
 cat /etc/shadow | cut -d: -f1,8 | sed /:$/d >/tmp/expirelist.txt
 totalaccounts=$(cat /tmp/expirelist.txt | wc -l)
@@ -134,31 +132,9 @@ for ((i = 1; i <= $totalaccounts; i++)); do
         rm -r /var/www/html/ssh-$username.txt > /dev/null 2>&1
         rm -r /etc/kyt/limit/ssh/ip/Trial-*  > /dev/null 2>&1
 
-        # Hapus user dari ZIVPN jika ada
-        if jq -e --arg pw "$username" '.auth.config | index($pw)' "$CONFIG_FILE" > /dev/null; then
-            echo "[$(date +"%F %T")] Menghapus ZIVPN user: $username karena sudah expired"
-            jq --arg pw "$username" '.auth.config -= [$pw]' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-        fi
     fi
 done
 
-if jq -e '.auth.config[] | select(test("^Trial-"))' "$CONFIG_FILE" >/dev/null 2>&1; then
-    echo "[$(date +"%F %T")] Membersihkan semua user Trial-* dari ZIVPN"
-
-    jq '
-      .auth.config |= map(select(test("^Trial-") | not))
-    ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-fi
-
-cut -d: -f1 /etc/passwd > /tmp/valid_ssh_users.txt
-jq --rawfile ssh /tmp/valid_ssh_users.txt '
-  .auth.config |= map(
-    select(. as $u | ($ssh | split("\n") | index($u)))
-  )
-' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-
-# Restart ZIVPN setelah semua user diproses
-systemctl restart zivpn
 
 # Langkah 1: Ambil daftar nama yang valid dari /etc/xray/config.json
 cat /etc/xray/config.json | grep '^###' | cut -d ' ' -f 2 | sort | uniq > /tmp/valid_vmess.txt
@@ -315,4 +291,3 @@ fun_bar 'res1'
 echo -e ""
 echo -e "\e[33m──────────────────────────────────────────\033[0m" 
 echo -e ""
-
