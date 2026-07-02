@@ -27,7 +27,6 @@ cd /root
 rm -rf /root/backup
 mkdir -p /root/backup/ > /dev/null 2>&1
 mkdir -p /root/backup/xray/ > /dev/null 2>&1
-mkdir -p /root/backup/zivpn/ > /dev/null 2>&1
 mkdir -p /root/backup/html/ > /dev/null 2>&1
 mkdir -p /root/backup/limit/ssh/ip > /dev/null 2>&1
 mkdir -p /root/backup/limit/vmess/ip > /dev/null 2>&1
@@ -54,7 +53,6 @@ cp -r /etc/limit/vmess/* /root/backup/quotax/vmess > /dev/null 2>&1
 cp -r /etc/limit/vless/* /root/backup/quotax/vless > /dev/null 2>&1
 cp -r /etc/limit/trojan/* /root/backup/quotax/trojan > /dev/null 2>&1
 cp /etc/xray/*.json /root/backup/xray/
-cp /etc/zivpn/*.json /root/backup/zivpn/
 cp /var/www/html/*.txt /root/backup/html/ > /dev/null 2>&1
 cp -r /etc/ssh/.ssh.db /root/backup/.ssh.db > /dev/null 2>&1
 cp -r /etc/vmess/.vmess.db /root/backup/.vmess.db > /dev/null 2>&1
