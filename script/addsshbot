@@ -33,13 +33,6 @@ if grep -qiw "$Login" /etc/passwd; then
     exit 0
 fi
 
-CONFIG_FILE="/etc/zivpn/config.json"
-TMP_FILE="/etc/zivpn/config.tmp"
-jq --arg pw "$Login" '.auth.config += [$pw]' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-systemctl restart zivpn
-CMD="jq '.auth.config -= [\"$Login\"]' $CONFIG_FILE > $TMP_FILE && mv $TMP_FILE $CONFIG_FILE && systemctl restart zivpn"
-
-
 # limitip
 if [[ $iplimit -gt 0 ]]; then
 mkdir -p /etc/kyt/limit/ssh/ip
@@ -79,8 +72,7 @@ City  : $CITY
 ----------------------
 Host  : $domain
 User  : $Login
-Pw    : $Pass
-Zivpn : $Login
+pw    : $Pass
 Max   : $iplimit IP
 Port  : 443, 80, 1-65535
 ----------------------
@@ -106,8 +98,7 @@ Status Create SSHWS Success
 <code>✧ Host  :</code> <code>$domain</code>
 <code>✧ IP    :</code> <code>$IP</code>
 <code>✧ User  :</code> <code>$Login</code>
-<code>✧ Pw    :</code> <code>$Pass</code>
-<code>✧ Zivpn :</code> <code>$Login</code>
+<code>✧ pw    :</code> <code>$Pass</code>
 <code>✧ Max   :</code> <code>$iplimit IP</code>
 <code>✧ Port  :</code> <code>443, 80, 1-65535</code>
 ──────────────────────
