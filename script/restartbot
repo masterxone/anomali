@@ -95,7 +95,6 @@ res11() {
 
 res12() {
     systemctl restart udp-custom
-    systemctl restart zivpn
     echo -e "[ \033[32mInfo\033[0m ] Udp-Custom Services Restarted"
     echo -e "Back to menu for 3 second"
     sleep 3
